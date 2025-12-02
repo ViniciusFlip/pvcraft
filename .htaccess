@@ -1,0 +1,68 @@
+RewriteEngine On
+
+# =====================================================
+# 1️⃣ Redirecionar domínio antigo pvcraft.site → pvcraft.net
+# =====================================================
+RewriteCond %{HTTP_HOST} ^(www\.)?pvcraft\.site$ [NC]
+RewriteRule ^(.*)$ https://pvcraft.net/$1 [R=301,L]
+
+# =====================================================
+# 2️⃣ Redirecionar antigos contents.html → novas URLs limpas
+# Exemplo: /addons/contents.html?id=returntojw → /addons/?id=returntojw
+# =====================================================
+RewriteCond %{THE_REQUEST} \s/(addons|maps|textures)/contents\.html\?id=([^&\s]+) [NC]
+RewriteRule ^(addons|maps|textures)/contents\.html$ https://pvcraft.net/%1/?id=%2 [R=301,L]
+
+# =====================================================
+# 3️⃣ Definir arquivos padrão
+# =====================================================
+DirectoryIndex index.php index.html
+
+# =====================================================
+# 4️⃣ Remover index.php e index.html da URL
+# =====================================================
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.(php|html)([?\s]) [NC]
+RewriteRule ^(.*/)?index\.(php|html)$ /%1 [R=301,L]
+
+# =====================================================
+# 5️⃣ Reescrever conteúdos com ?id= para index.php da pasta
+# =====================================================
+RewriteCond %{QUERY_STRING} (^|&)id= [NC]
+RewriteRule ^(addons|maps|textures)/?$ $1/index.php [L]
+
+# =====================================================
+# 6️⃣ Se for só a pasta (sem parâmetros), usar index.html
+# =====================================================
+RewriteRule ^addons/?$ addons/index.html [L]
+RewriteRule ^maps/?$ maps/index.html [L]
+RewriteRule ^textures/?$ textures/index.html [L]
+
+# =====================================================
+# 7️⃣ Regras específicas para /blog
+# =====================================================
+
+# 👉 Primeiro: se tiver parâmetro id= → blog/index.php
+RewriteCond %{QUERY_STRING} (^|&)id= [NC]
+RewriteRule ^blog/?$ blog/index.php [L]
+
+# 👉 Depois: se for só /blog ou /blog/ → blog/index.html
+RewriteRule ^blog/?$ blog/index.html [L]
+
+# =====================================================
+# 8️⃣ Redirecionar URLs inexistentes → page-not-found
+# =====================================================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/(error|page-not-found)/ [NC]
+RewriteRule ^(.+)$ /page-not-found/index.html [L,R=302]
+
+# =====================================================
+# 9️⃣ Reescrita genérica para index.php principal
+# =====================================================
+RewriteCond %{REQUEST_URI} !^/index\.php$ [NC]
+RewriteCond %{REQUEST_URI} !^/blog [NC]
+RewriteCond %{REQUEST_URI} !^/(addons|maps|textures) [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|webp)$ [NC]
+RewriteRule ^(.*)$ index.php [L]

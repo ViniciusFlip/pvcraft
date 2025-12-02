@@ -1,0 +1,3 @@
+# Coloque uma URL por linha. Exemplo:
+https://www.exemplo.com/
+# https://www.exemplo.com/sobre

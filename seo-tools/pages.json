@@ -1,0 +1,57 @@
+[
+  {
+    "url": "/",
+    "changefreq": "daily",
+    "priority": 1.0
+  },
+  {
+    "url": "/addons",
+    "changefreq": "monthly",
+    "priority": 0.8
+  },
+  {
+    "url": "/maps",
+    "changefreq": "monthly",
+    "priority": 0.6
+  },
+    {
+    "url": "/textures",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+    {
+    "url": "/page",
+    "changefreq": "monthly",
+    "priority": 0.8
+  },
+    {
+    "url": "/home",
+    "changefreq": "monthly",
+    "priority": 0.6
+  },
+     {
+    "url": "/submission",
+    "changefreq": "monthly",
+    "priority": 0.5
+  },
+     {
+    "url": "/blog",
+    "changefreq": "weekly",
+    "priority": 0.5
+  },
+     {
+    "url": "/terms",
+    "changefreq": "monthly",
+    "priority": 0.1
+  },
+     {
+    "url": "/privacy",
+    "changefreq": "monthly",
+    "priority": 0.1
+  },
+   {
+    "url": "/contact",
+    "changefreq": "monthly",
+    "priority": 0.4
+  }
+]

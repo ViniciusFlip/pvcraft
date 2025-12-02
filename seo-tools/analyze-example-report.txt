@@ -1,0 +1,14 @@
+Exemplo de saída (analysis-report.json):
+[
+  {
+    "url": "https://www.exemplo.com/",
+    "title": "Página Inicial | Minha Empresa",
+    "description": "Descrição da home...",
+    "canonical": "https://www.exemplo.com/",
+    "ogTitle": "Página Inicial | Minha Empresa",
+    "ogDescription": "Descrição da home...",
+    "ogImage": "https://www.exemplo.com/og.jpg",
+    "twitterCard": "summary_large_image",
+    "robots": "index, follow"
+  }
+]

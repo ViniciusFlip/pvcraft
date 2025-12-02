@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://pvcraft.net/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/addons/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/maps/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/textures/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/submission/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/page/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/terms/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/privacy/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://pvcraft.net/contact/</loc>
+  <lastmod>2025-10-25T21:29:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
