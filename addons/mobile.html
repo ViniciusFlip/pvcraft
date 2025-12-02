@@ -491,35 +491,15 @@
         </div>
     </nav>
  
-
-    <!-- Conteúdo principal -->
+ 
+     <!-- Conteúdo principal -->
     <main class="content-container"> 
 
           <div class="flx-container">
 
             <div class="doble-ads">
                 
-                <div class="box-ads">
-                    <!-- side-vertical -->
-                    <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-8023784976492432"
-                    data-ad-slot="6872905425"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true">
-                    </ins> 
-                </div>
-                <div class="box-ads">
-                    <!-- side-vertical -->
-                    <ins class="adsbygoogle"
-                    style="display:block"
-                    data-ad-client="ca-pub-8023784976492432"
-                    data-ad-slot="6872905425"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true">
-                    </ins>
-                    
-                </div>
+           
             </div>
 
             <div class="mycontent">
@@ -539,7 +519,7 @@
                         </div>
 
                         <section class="content-section" style="min-height: 500px;">
-                            <div class="content-grid" id="xaddons-grid">
+                            <div class="content-grid" id="addons-grid">
                                 <div class="loading">
                                     <i class="fas fa-circle-notch fa-spin"></i> Loading Addons...
                                 </div>
@@ -556,33 +536,12 @@
             </div>
 
             <div class="doble-ads">
-                <div class="box-ads">
-                      
-                        <!-- side-vertical -->
-                        <ins class="adsbygoogle"
-                        style="display:block"
-                        data-ad-client="ca-pub-8023784976492432"
-                        data-ad-slot="6872905425"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true">
-                        </ins>
-                        
-                </div>
-                <div class="box-ads">
-                    
-                        <!-- side-vertical -->
-                        <ins class="adsbygoogle"
-                        style="display:block"
-                        data-ad-client="ca-pub-8023784976492432"
-                        data-ad-slot="6872905425"
-                        data-ad-format="auto"
-                        data-full-width-responsive="true">
-                        </ins>
-                     
-                </div>
+               
+               
             </div>
     </div>
     </main>
+
 
 
     <!-- ADS horizontal -->
@@ -598,6 +557,8 @@
             </ins> 
         </div>
     </div>
+
+    <script>  (adsbygoogle = window.adsbygoogle || []).push({});</script>
 
     <!-- Rodapé -->
     <footer class="footer">
@@ -624,7 +585,10 @@ Community creations shared with permission.</p>
         </div>
     </footer>
 
-    <!-- Firebase SDK v9 (Modular) -->
+
+
+
+ <!-- Firebase SDK v9 (Modular) -->
     <script type="module">
         // Configuração do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
@@ -715,18 +679,13 @@ Community creations shared with permission.</p>
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        function renderAd() {
-            try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {
-                console.warn("Erro ao renderizar anúncio", e);
-            }
-        }
+         
         // Variáveis globais
         let allAddons = [];
-        let filteredAddons = [];
+        let filteredContents = [];
         const itemsPerPage = 12;
         let currentSort = 'recent'; // Padrão: Most Recent
+        let currentTypeFilter = 'all';
         let currentPage = 1;
 
         /**
@@ -736,62 +695,66 @@ Community creations shared with permission.</p>
             try {
                 const grid = document.getElementById('addons-grid');
                 const pagination = document.getElementById('pagination');
-                const itemsPerPage = 12;
 
-                grid.innerHTML = '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i> Loading Addons...</div>';
+                // Mostra estado de carregamento
+                grid.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-circle-notch fa-spin"></i> Loading all content...
+                    </div>
+                `;
                 pagination.innerHTML = '';
 
-                // Se ainda não carregamos todos os addons, busca do Firebase
+                // Se ainda não carregamos todos os conteúdos, busca do Firebase
                 if (allAddons.length === 0) {
-                    const q = query(collection(db, "addons"), where("tipo", "==", "addon"));
-                    const querySnapshot = await getDocs(q);
-
-                    if (querySnapshot.empty) {
-                        grid.innerHTML = '<p class="error-message">No addons found.</p>';
-                        return;
+                    // Coleções a serem buscadas
+                    const collections = ['addons'];
+                    console.log('Flag')
+                    for (const col of collections) {
+                        try {
+                            const querySnapshot = await getDocs(collection(db, col));
+                            querySnapshot.forEach(doc => {
+                                const data = doc.data();
+                                
+                                // Processar data e views do Firebase
+                                const contentDate = data.data || generateRandomDate();
+                                const contentViews = data.views !== undefined ? parseInt(data.views) : generateRandomViews();
+                                const formattedViews = formatNumber(contentViews);
+                                
+                                // Converter data para timestamp para ordenação
+                                const timestamp = convertDateToTimestamp(contentDate);
+                                
+                                allAddons.push({
+                                    id: doc.id,
+                                    collection: col,
+                                    // Usar dados reais do Firebase
+                                    timestamp: timestamp,
+                                    views: contentViews,
+                                    contentDate: contentDate,
+                                    formattedViews: formattedViews,
+                                    ...data
+                                });
+                            });
+                        } catch (error) {
+                            console.error(`Error loading ${col}:`, error);
+                        }
                     }
-
-                    // Coletar todos os addons
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        
-                        // Processar data e views
-                        const contentDate = data.data || generateRandomDate();
-                        const contentViews = data.views !== undefined ? data.views : generateRandomViews();
-                        const formattedViews = formatNumber(contentViews);
-                        
-                        // USANDO O MESMO SISTEMA DA PÁGINA HOME: Converter data para timestamp
-                        const timestamp = convertDateToTimestamp(contentDate);
-                        
-                        allAddons.push({
-                            id: doc.id,
-                            // USANDO O MESMO SISTEMA DA PÁGINA HOME
-                            timestamp: timestamp,
-                            views: data.views || Math.floor(Math.random() * 1000),
-                            contentDate: contentDate,
-                            formattedViews: formattedViews,
-                            ...data
-                        });
-                    });
-
-                    // console.log('Addons carregados com timestamps:', allAddons.map(a => ({
-                    //     title: a.titulo,
-                    //     date: a.contentDate,
-                    //     timestamp: a.timestamp
-                    // })));
                 }
 
-                // Aplica o filtro de ordenação
-                applySort();
+                // Aplica os filtros atuais
+                 applyFilters();
 
-                // Exibe os addons ou mensagem de erro
-                if (filteredAddons.length === 0) {
-                    grid.innerHTML = '<p class="error-message">No addons found.</p>';
+                // Exibe os conteúdos ou mensagem de erro
+                if (filteredContents.length === 0) {
+                    grid.innerHTML = `
+                        <p class="no-content">
+                            No content available.
+                        </p>
+                    `;
                     return;
                 }
 
                 // Calcular totais de paginação
-                const totalItems = filteredAddons.length;
+                const totalItems = filteredContents.length;
                 const totalPages = Math.ceil(totalItems / itemsPerPage);
 
                 // Limitar a página atual ao máximo disponível
@@ -800,34 +763,34 @@ Community creations shared with permission.</p>
                 // Obter itens para a página atual
                 const startIndex = (currentPage - 1) * itemsPerPage;
                 const endIndex = startIndex + itemsPerPage;
-                const pageAddons = filteredAddons.slice(startIndex, endIndex);
+                const pageContents = filteredContents.slice(startIndex, endIndex);
 
                 // Limpar grid e adicionar cards
                 grid.innerHTML = '';
 
-                if (pageAddons.length === 0) {
-                    grid.innerHTML = '<p class="error-message">No addons found for this page.</p>';
+                if (pageContents.length === 0) {
+                    grid.innerHTML = '<p class="error-message">No content found for this page.</p>';
                     return;
                 }
 
                 // Adicionar cards com anúncios horizontais a cada 6 cards (2 linhas)
                 let cardCount = 0;
-                for (let i = 0; i < pageAddons.length; i++) {
-                    const addon = pageAddons[i];
+                for (let i = 0; i < pageContents.length; i++) {
+                    const content = pageContents[i];
                     const card = document.createElement('article');
                     card.className = 'conteudo';
-                    card.innerHTML = createAddonCardHTML(addon);
+                    card.innerHTML = createContentCardHTML(content);
                     grid.appendChild(card);
                     
                     cardCount++;
                     
                     // Adicionar anúncio horizontal a cada 6 cards (2 linhas de 3 cards)
-                    if (cardCount % 6 === 0 && i < pageAddons.length - 1) {
+                    if (cardCount % 6 === 0 && i < pageContents.length - 1) {
                         const adContainer = document.createElement('div');
-                        adContainer.className = 'horizontal-ad';
+                        adContainer.className = 'horizontal';
                         adContainer.style.gridColumn = '1 / -1'; // Garantir que ocupe toda a largura
                         adContainer.innerHTML = `
-                                <!-- ADS horizontal -->
+                            <!-- ADS horizontal -->
                             
                                 <div class="box-ads mob">  
                                     <!-- ADS horizontal -->
@@ -839,43 +802,65 @@ Community creations shared with permission.</p>
                                         data-full-width-responsive="true">
                                     </ins> 
                                 </div>
-                        `;
-                        grid.appendChild(adContainer); 
-
-                        setTimeout(() => {
-                            renderAd();
-                        }, 300);
-                       // ✅ E logoss em seguida, renderiza o AdSense
-
-                        setTimeout(() => { 
-                            try {
-                                (adsbygoogle = window.adsbygoogle || []).push({});
-                            } catch (e) {
-                                console.warn("Err Meio", e);
-                                 
-                            }
-                        }, 1500);
-                                            
                         
+                        `;
+                        grid.appendChild(adContainer);
+                        // ✅ CORREÇÃO OBRIGATÓRIA: Reativa o AdSense após criar conteúdo dinâmico
+                        (adsbygoogle = window.adsbygoogle || []).push({});
                     }
                 }
-                     
-                        
-                    
+
                 // Criar paginação (se necessário)
                 if (totalPages > 1) {
                     createPagination(totalPages, currentPage);
                 }
 
-               
             } catch (error) {
-                // console.error("Error loading addons:", error);
-                document.getElementById('addons-grid').innerHTML =
-                    '<p class="error-message">Error loading addons. Please reload the page.</p>';
+                console.error("Error loading content:", error);
+                document.getElementById('content-grid').innerHTML = `
+                    <p class="error-message">
+                        Error loading content. Please reload the page.
+                    </p>
+                `;
+                location.reload();
             }
-             
         }
 
+
+        function applyFilters() {
+            // Primeiro aplica o filtro de tipo
+            let tempContents = [...allAddons];
+            
+            if (currentTypeFilter !== 'all') {
+                tempContents = tempContents.filter(content => content.collection === currentTypeFilter);
+            }
+            
+            // Depois aplica a ordenação baseada nos parâmetros do Firebase
+            switch(currentSort) {
+                case 'recent':
+                    // Ordena por data (mais recentes primeiro) - usando o campo 'data' do Firebase
+                    filteredContents = tempContents.sort((a, b) => {
+                        // Ordena por timestamp (maior timestamp = mais recente)
+                        return b.timestamp - a.timestamp;
+                    });
+                    break;
+                    
+                case 'popular':
+                    // Ordena por visualizações (mais populares primeiro) - usando o campo 'views' do Firebase
+                    filteredContents = tempContents.sort((a, b) => {
+                        const viewsA = a.views || 0;
+                        const viewsB = b.views || 0;
+                        return viewsB - viewsA;
+                    });
+                    break;
+                    
+                default:
+                    filteredContents = tempContents;
+                    break;
+            }
+        }
+
+      
         // Função para obter um slot de anúncio aleatório
         function getRandomAdSlot() {
             const adSlots = [
@@ -1033,6 +1018,55 @@ Community creations shared with permission.</p>
             pagination.appendChild(nextButton);
         }
 
+           function createContentCardHTML(content) {
+            // Determina a URL correta baseada no tipo de conteúdo
+            let contentUrl;
+            switch (content.collection) {
+                case 'addons':
+                    contentUrl = `/addons/index.php?id=${content.id}`;
+                    break;
+                case 'maps':
+                    contentUrl = `/maps/index.php?id=${content.id}`;
+                    break;
+                case 'textures':
+                    contentUrl = `/textures/index.php?id=${content.id}`;
+                    break;
+                default:
+                    contentUrl = '#';
+            }
+
+            // Fallbacks para campos opcionais
+            const imageUrl = content.imagem || content.imageUrl || '/home/imgs/default.jpg';
+            const title = content.titulo || content.title || 'No title';
+            const description = content.descricaoCurta || content.descricao || content.description || 'Explore this amazing content';
+            const author = content.autor || content.author || 'Unknown author';
+            const type = content.tipo || content.type || content.collection.toUpperCase();
+
+            // Usar data e views reais do Firebase
+            const contentDate = content.contentDate || '';
+            const formattedViews = content.formattedViews || '0';
+
+            return `
+                <a href="${contentUrl}">
+                    <img src="${imageUrl}" 
+                         alt="${title}" 
+                         class="imagem"
+                         onerror="this.src='/home/imgs/default.jpg'">
+                    <h2 class="titulo">${title}</h2>
+                    
+                    <!-- Data e Views - COR BRANCA -->
+                    <div class="content-meta">
+                        <span class="content-date">${contentDate}</span>
+                        <span class="content-views">${formattedViews} views</span>
+                    </div>
+                    
+                    <p class="descricao-curta">${description}</p>
+                    <p class="autor">${author}</p>
+                    <div class="tipo">${type}</div>
+                </a>
+            `;
+        }
+
         // Configura o filtro dropdown (ordenação)
         function setupSortDropdown() {
             const dropdown = document.getElementById('sortDropdown');
@@ -1045,6 +1079,25 @@ Community creations shared with permission.</p>
             });
         }
 
+         // Configura os botões de filtro de tipo
+        function setupTypeFilterButtons() {
+            const buttons = document.querySelectorAll('.type-filter-button');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove a classe active de todos os botões
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Adiciona a classe active ao botão clicado
+                    button.classList.add('active');
+                    
+                    // Atualiza o filtro
+                    currentTypeFilter = button.dataset.filter;
+                    applyFilters();
+                    loadAllContents(1); // Recarrega na primeira página
+                });
+            });
+        }
         // Sistema de Login com Google (MESMO DA PÁGINA HOME)
         function setupGoogleLogin() {
             const loginModal = document.getElementById('loginModal');
@@ -1303,38 +1356,9 @@ Community creations shared with permission.</p>
         });
     </script>
 
-     <script>  
 
-function initAdsWhenAllInsAreReady() {
-    let timeoutId;
 
-    const observer = new MutationObserver(() => {
-        clearTimeout(timeoutId);
-
-        // Espera 300ms sem novos <ins> aparecerem
-        timeoutId = setTimeout(() => {
-            observer.disconnect();
-
-            const insList = document.querySelectorAll("ins.adsbygoogle");
-
-             console.log("Todos os INS detectados:", insList.length);
-
-            insList.forEach(() => {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            });
-
-        }, 300);
-    });
-
-    // Observa toda a página por novos elementos
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
-
-initAdsWhenAllInsAreReady();
-    </script>
+    
 </body>
 
 </html>

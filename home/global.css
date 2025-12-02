@@ -1707,7 +1707,9 @@ ins.adsbygoogle {
     }
     
     .box-ads.mob {
-        display: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         overflow: hidden;
         position: relative !important;
         width: 100% !important;
